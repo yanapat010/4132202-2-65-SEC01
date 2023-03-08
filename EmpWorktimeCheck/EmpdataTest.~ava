@@ -1,0 +1,101 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import java.sql.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.MouseEvent;
+
+
+/**
+ *
+ * Description
+ *
+ * @version 1.0 from 18/02/2023
+ * @author 
+ */
+
+public class EmpdataTest extends JFrame {
+  // start attributes
+  private JTable jTable1 = new JTable(0, 3);
+  private JScrollPane jScrollPane1 = new JScrollPane(jTable1);
+  private DefaultTableModel Model = (DefaultTableModel) jTable1.getModel();
+
+   
+  // end attributes
+  
+  public EmpdataTest() { 
+    // Frame-Init
+    super();
+    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    int frameWidth = 531; 
+    int frameHeight = 559;
+    setSize(frameWidth, frameHeight);
+    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+    int x = (d.width - getSize().width) / 2;
+    int y = (d.height - getSize().height) / 2;
+    setLocation(x, y);
+    setTitle("EmpdataTest");
+    setResizable(false);
+    Container cp = getContentPane();
+    cp.setLayout(null);
+    // start components
+     Empshowdata();
+    
+    jScrollPane1.setBounds(16, 184, 488, 320);
+    cp.add(jScrollPane1);
+    
+//    jTable1.getColumnModel().getColumn(0).setHeaderValue("YOURID");
+//    jTable1.getColumnModel().getColumn(1).setHeaderValue("NAME");
+//    jTable1.getColumnModel().getColumn(2).setHeaderValue("LASTNAME");
+//    jTable1.getColumnModel().getColumn(3).setHeaderValue("PHONE");
+    
+    jTable1.getColumnModel().getColumn(0).setHeaderValue("YOURID");
+    jTable1.getColumnModel().getColumn(1).setHeaderValue("CHECKEMP");
+    jTable1.getColumnModel().getColumn(2).setHeaderValue("TIME");
+    
+    
+    // end components
+    
+    setVisible(true);
+  } // end of public EmpdataTest
+     public void Empshowdata(){
+   try {
+      // Step 1: Connect to the database
+      Connection conn = DriverManager.getConnection(
+      // start methods
+      "jdbc:mysql://localhost/emptime", "root", "");
+      
+      //  Execute a query
+      Statement st = conn.createStatement();
+      ResultSet rs = st.executeQuery("SELECT * FROM emptimecheck");
+      
+      //  Create a DefaultTableModel object
+      DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+      //       DefaultTableModel model =  new DefaultTableModel(
+      //          new Object[] { "lYourID1" , "title" , "author" , "publisher" , "publishedYear"  }, 0);  // set a name in table to display 
+      
+      
+      while (rs.next()) {
+        String YourID= rs.getString("YOURID");  //<<< the columns name in database
+        String CHECKEMP = rs.getString("CHECKEMP");    //<<< the columns name in database
+        String TIME = rs.getString("TIME");   //<<< the columns name in database
+        model.addRow(new Object[] { YourID,  CHECKEMP, TIME});  // add row to the table until it can't find any data in database 
+  
+      }
+      
+      
+      // Close the connection
+      conn.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    };  
+  };
+  // start methods
+  
+  public static void main(String[] args) {
+    new EmpdataTest();
+  } // end of main
+  
+  // end methods
+} // end of class EmpdataTest

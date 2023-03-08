@@ -1,0 +1,45 @@
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+public class EmpShowReport {
+public EmpShowReport(){
+      try {
+      // Step 1: Connect to the database
+      Connection conn = DriverManager.getConnection(
+           "jdbc:mysql://localhost/emptime", "root", "");
+
+      //  Execute a query
+      Statement st = conn.createStatement();
+      ResultSet rs = st.executeQuery("SELECT * FROM employee");
+
+      //  Create a DefaultTableModel object
+      DefaultTableModel model = new DefaultTableModel(
+          new Object[] { "YOURID" , "NAME" , "LASTNAME" , "PHONE"}, 0);  // set a name in table to display 
+
+    
+      while (rs.next()) {
+        String YOURID = rs.getString("YOURID");  //<<< the columns name in database
+        String NAME = rs.getString("NAME");    //<<< the columns name in database
+        String LASTNAME = rs.getString("LASTNAME");   //<<< the columns name in database
+        String PHONE = rs.getString("PHONE"); //<<< the columns name in database
+        model.addRow(new Object[] { YOURID, NAME, LASTNAME, PHONE});  // add row to the table until it can't find any data in database 
+      }
+
+      JTable table = new JTable(model);
+
+
+      JScrollPane scrollPane = new JScrollPane(table);
+
+      // Close the connection
+      conn.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+ 
+   } 
+  
+   public static void main(String[] args) {
+    new EmpShowReport();
+  }
+}
